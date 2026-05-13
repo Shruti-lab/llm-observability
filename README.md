@@ -117,7 +117,7 @@ llm-obs/
 │   └── dashboards/
 │       └── llm-health-monitor.json
 ├── k8s/                       # Kubernetes manifests (for Azure)
-├── docker compose.yaml
+├── docker-compose.yaml
 └── README.md
 ```
 
@@ -228,14 +228,6 @@ By building this project, you've learned:
 - ✅ Kubernetes deployment patterns
 - ✅ Observability best practices
 - ✅ LLM monitoring and quality evaluation
-
-## 📝 Resume Line
-
-> "Built an LLM observability system using Docker, Grafana, and Prometheus — monitoring inference latency and response quality in real time."
-
-## 🤝 Contributing
-
-Feel free to open issues or submit PRs for improvements!
 
 ## 📄 License
 
