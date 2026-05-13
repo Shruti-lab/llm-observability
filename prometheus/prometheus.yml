@@ -1,0 +1,35 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    monitor: 'llm-health-monitor'
+
+scrape_configs:
+  # Scrape Prometheus itself
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # Scrape the FastAPI monitor service
+  - job_name: 'llm-monitor'
+    scrape_interval: 10s
+    static_configs:
+      - targets: ['monitor:8000']
+        labels:
+          service: 'llm-health-monitor'
+          environment: 'local'
+    metrics_path: '/metrics'
+
+
+    
+# What is monitor?
+
+# monitor is likely:
+
+# a Docker container name
+# Docker Compose service name
+# Kubernetes service DNS name
+
+# Inside Docker Compose, Prometheus can resolve:
+
+# monitor -> container IP

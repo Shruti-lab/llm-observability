@@ -1,0 +1,85 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: monitor-config
+  namespace: llm-obs
+data:
+  LLM_URL: "http://llamacpp:8080"
+  LLM_MODEL: "llama-3.2-1b-instruct"
+  MONITOR_INTERVAL: "30"
+  TEST_PROMPT: "What is 2+2?"
+  EXPECTED_ANSWER: "4"
+  LOG_LEVEL: "INFO"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: monitor
+  namespace: llm-obs
+  labels:
+    app: monitor
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: monitor
+  template:
+    metadata:
+      labels:
+        app: monitor
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8000"
+        prometheus.io/path: "/metrics"
+    spec:
+      initContainers:
+      - name: wait-for-llamacpp
+        image: busybox:1.35
+        command: ['sh', '-c', 'until nc -z llamacpp 8080; do echo waiting for llamacpp; sleep 2; done;']
+      containers:
+      - name: monitor
+        image: <your-registry>/llm-monitor:latest  # Replace with your image
+        ports:
+        - containerPort: 8000
+          name: http
+        envFrom:
+        - configMapRef:
+            name: monitor-config
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 30
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 10
+          periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: monitor
+  namespace: llm-obs
+  labels:
+    app: monitor
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 8000
+    protocol: TCP
+    name: http
+  selector:
+    app: monitor
+
+ 
