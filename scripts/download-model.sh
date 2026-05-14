@@ -5,7 +5,7 @@ set -e
 echo "📥 Downloading Llama 3.2 1B Instruct model (GGUF format)..."
 
 # Create models directory
-mkdir -p ../models
+mkdir models
 
 # Model URL (Hugging Face)
 MODEL_URL="https://huggingface.co/bartowski/Llama-3.2-1B-Instruct-GGUF/resolve/main/Llama-3.2-1B-Instruct-Q4_K_M.gguf"

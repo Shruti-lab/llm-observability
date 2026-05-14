@@ -3,7 +3,7 @@ version: '3.8'
 services:
   # llama.cpp LLM Service (Official Image)
   llamacpp:
-    image: ghcr.io/ggerganov/llama.cpp:server
+    image: ghcr.io/ggml-org/llama.cpp:server
     container_name: llm-obs-llamacpp
     ports:
       - "8080:8080"

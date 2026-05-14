@@ -31,16 +31,17 @@ async def monitor_llm():
         # Update duration metric
         LLM_REQUEST_DURATION.labels(
             model=settings.llm_model,
-            method="POST",
-            endpoint="/monitor"
+            endpoint="/monitor",
+            method="POST"
         ).observe(duration)
         
         # Update request count
         status = "success" if result["success"] else "failure"
         LLM_REQUEST_COUNT.labels(
             model=settings.llm_model,
+            endpoint='/monitor',
             method="POST",
-            status=status
+            status_code=result['status_code']
         ).inc()
         
         # Evaluate and update quality
@@ -50,9 +51,7 @@ async def monitor_llm():
                 expected=settings.expected_answer
             )
             LLM_RESPONSE_QUALITY.labels(
-                model=settings.llm_model,
-                endpoint="/monitor",
-                status=status
+                model=settings.llm_model
             ).set(quality)
             
             # Update token count
@@ -121,6 +120,7 @@ class MetricsMiddleware(BaseHTTPMiddleware):
         method = request.method
         endpoint = request.url.path
         start_time = time.time()
+        status_code = 102
 
         try:
             response = await call_next(request)
@@ -134,15 +134,16 @@ class MetricsMiddleware(BaseHTTPMiddleware):
             duration = time.time() - start_time
             LLM_REQUEST_DURATION.labels(
                 model=settings.llm_model,
-                method=method,
-                endpoint=endpoint
+                endpoint=endpoint,
+                method=method
             ).observe(duration)
 
             # Record request count
             LLM_REQUEST_COUNT.labels(
                 model=settings.llm_model,
+                endpoint=endpoint,
                 method=method,
-                status=str(status_code)
+                status_code=str(status_code)
             ).inc()
 
         return response

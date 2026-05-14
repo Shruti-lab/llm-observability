@@ -49,7 +49,7 @@ LLM_TOKEN_COUNT = Gauge(
 LLM_ERROR_COUNT = Counter(
     'llm_errors_total',
     'Total LLM errors',
-    ['model','error_type']
+    ['model','endpoint','error_type']
 )
 #     ['model','endpoint','error_type']
 
