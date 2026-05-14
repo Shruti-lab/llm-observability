@@ -37,6 +37,13 @@ This system continuously monitors an LLM service (Ollama/llama.cpp), tracks key 
 | `llm_tokens_count` | Gauge | Tokens generated per request |
 | `llm_errors_total` | Counter | Errors by type (timeout, http_500, etc.) |
 
+
+## Metrics tracking on Grafana
+<img width="1920" height="1200" alt="image" src="https://github.com/user-attachments/assets/5c6e4907-bcae-4bf4-9184-8d78de777efa" />
+
+## Metrics track on Prometheus
+<img width="1920" height="1200" alt="image" src="https://github.com/user-attachments/assets/348f3668-ddfe-4948-adde-6a1cc4a73170" />
+
 ## 🚀 Quick Start
 
 ### Prerequisites
